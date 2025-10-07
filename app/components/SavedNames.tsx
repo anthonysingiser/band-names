@@ -111,31 +111,33 @@ export default function SavedNames({ savedNames, onRemoveName, className = '' }:
           return (
             <div
               key={`${name}-${originalIndex}`}
-              className="group relative bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4 hover:shadow-lg transition-all duration-200 hover:scale-105"
+              className="group relative bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4 hover:shadow-lg transition-all duration-200 hover:scale-105 min-h-[80px]"
             >
-              <div className="flex items-start justify-between">
+              <div className="pr-8">
                 <h3 className="font-medium text-gray-800 group-hover:text-purple-700 transition-colors break-words">
                   {name}
                 </h3>
-                <button
-                  onClick={() => onRemoveName(originalIndex)}
-                  className="opacity-0 group-hover:opacity-100 ml-2 p-1 text-red-400 hover:text-red-600 transition-all duration-200 hover:scale-110"
-                  title="Remove from collection"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
               </div>
               
-              {/* Copy individual name */}
+              {/* Remove button - top right */}
+              <button
+                onClick={() => onRemoveName(originalIndex)}
+                className="opacity-0 group-hover:opacity-100 absolute top-2 right-2 p-1 text-red-400 hover:text-red-600 transition-all duration-200 hover:scale-110 bg-white/80 rounded-full"
+                title="Remove from collection"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              
+              {/* Copy individual name - bottom right */}
               <button
                 onClick={() => navigator.clipboard.writeText(name)}
-                className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-purple-600 transition-all duration-200"
+                className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 p-1 text-gray-400 hover:text-purple-600 transition-all duration-200 bg-white/80 rounded-full shadow-sm hover:shadow-md"
                 title="Copy name"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
               </button>
             </div>

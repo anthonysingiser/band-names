@@ -42,14 +42,19 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
           let newVx = name.vx;
           let newVy = name.vy;
 
-          // Bounce off edges
-          if (newX <= 0 || newX >= 480) {
+          // Bounce off edges (accounting for text bubble size)
+          const bubbleWidth = Math.max(80, name.name.length * 12); // Estimate bubble width
+          const bubbleHeight = 40; // Estimate bubble height
+          const margin = bubbleWidth / 2;
+          const verticalMargin = bubbleHeight / 2;
+          
+          if (newX <= margin || newX >= (480 - margin)) {
             newVx = -newVx;
-            newX = Math.max(0, Math.min(480, newX));
+            newX = Math.max(margin, Math.min(480 - margin, newX));
           }
-          if (newY <= 0 || newY >= 480) {
+          if (newY <= verticalMargin || newY >= (480 - verticalMargin)) {
             newVy = -newVy;
-            newY = Math.max(0, Math.min(480, newY));
+            newY = Math.max(verticalMargin, Math.min(480 - verticalMargin, newY));
           }
 
           return {
@@ -139,8 +144,12 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
     let spawnX: number, spawnY: number;
 
     do {
-      spawnX = Math.random() * 400 + 40;
-      spawnY = Math.random() * 400 + 40;
+      const bubbleWidth = Math.max(80, result.name.length * 12);
+      const margin = bubbleWidth / 2;
+      const verticalMargin = 20;
+      
+      spawnX = Math.random() * (480 - 2 * margin) + margin;
+      spawnY = Math.random() * (480 - 2 * verticalMargin) + verticalMargin;
       
       // Check if this position overlaps with existing names from the same generation
       validPosition = !floatingNames.some(existingName => {
@@ -287,13 +296,13 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
               left: `${name.x}px`,
               top: `${name.y}px`,
               opacity: name.opacity,
-              transform: `scale(${name.scale})`,
+              transform: `scale(${name.scale}) translate(-50%, -50%)`,
               zIndex: 10
             }}
             onClick={() => handleNameClick(name)}
           >
-            <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-full shadow-xl border-2 border-purple-300 hover:bg-purple-50 transition-colors">
-              <span className="text-lg font-bold text-purple-900">
+            <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-full shadow-xl border-2 border-purple-300 hover:bg-purple-50 transition-colors whitespace-nowrap flex items-center justify-center min-w-max">
+              <span className="text-lg font-bold text-purple-900 text-center leading-none">
                 {name.name}
               </span>
             </div>
