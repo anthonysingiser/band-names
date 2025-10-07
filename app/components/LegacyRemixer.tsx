@@ -60,7 +60,7 @@ export default function OriginalNames({ originalNames, className = '' }: Origina
 
       {filteredNames.length === 0 && searchTerm && (
         <div className="text-center py-8 text-gray-500">
-          No names found matching "{searchTerm}"
+          No names found matching &quot;{searchTerm}&quot;
         </div>
       )}
 

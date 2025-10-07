@@ -36,7 +36,7 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
 
     const animate = () => {
       setFloatingNames(prev => {
-        let updatedNames = prev.map(name => {
+        const updatedNames = prev.map(name => {
           let newX = name.x + name.vx;
           let newY = name.y + name.vy;
           let newVx = name.vx;
@@ -313,7 +313,7 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
         {floatingNames.length === 0 && !isShaking && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
             <div className="text-center text-purple-600 bg-white/80 p-4 rounded-lg">
-              <p className="font-medium">Click "Shake the Crystal Ball"</p>
+              <p className="font-medium">Click &quot;Shake the Crystal Ball&quot;</p>
               <p className="text-sm">to generate magical band names!</p>
             </div>
           </div>

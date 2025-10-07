@@ -12,7 +12,7 @@ export default function SavedNames({ savedNames, onRemoveName, className = '' }:
   const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'alphabetical'>('newest');
 
   const filteredAndSortedNames = React.useMemo(() => {
-    let filtered = savedNames.filter(name => 
+    const filtered = savedNames.filter(name => 
       name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -94,7 +94,7 @@ export default function SavedNames({ savedNames, onRemoveName, className = '' }:
         <div>
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest' | 'alphabetical')}
             className="px-3 py-2 border border-gray-300 rounded-md bg-white focus:ring-2 focus:ring-purple-500 focus:border-transparent"
           >
             <option value="newest">Newest First</option>
@@ -106,7 +106,7 @@ export default function SavedNames({ savedNames, onRemoveName, className = '' }:
 
       {/* Names Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {filteredAndSortedNames.map((name, index) => {
+        {filteredAndSortedNames.map((name) => {
           const originalIndex = savedNames.findIndex(savedName => savedName === name);
           return (
             <div

@@ -4,12 +4,6 @@ import v from 'voca';
 
 const ENDPOINT = '/api/names'; // Use internal API route
 
-interface NameData {
-  originalNames: string[];
-  wordBag: string[];
-  savedNames: string[];
-}
-
 export default function useNames() {
     const [names, setNames] = useState<string[]>([]);
     const [wordBag, setWordBag] = useState<string[]>([]);
@@ -25,8 +19,8 @@ export default function useNames() {
 
         fetch(ENDPOINT)
         .then((response) => response.json())
-        .then((rows: any[]) => {
-            const extractedNames: string[] = rows.flatMap((row: any) => {
+        .then((rows: Record<string, string>[]) => {
+            const extractedNames: string[] = rows.flatMap((row: Record<string, string>) => {
                 return Object.keys(row)
                     .filter((key) => key.startsWith('#'))
                     .map((key) => row[key])

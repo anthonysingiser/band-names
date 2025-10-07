@@ -62,7 +62,7 @@ export default function Home() {
             ].map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'generator' | 'collection' | 'remixer')}
                 className={`px-6 py-3 rounded-md transition-all duration-200 ${
                   activeTab === tab.id
                     ? 'bg-purple-600 text-white shadow-lg'
