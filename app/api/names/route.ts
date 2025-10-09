@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server';
 
-const SHEETDB_ENDPOINT = process.env.SHEETDB_ENDPOINT || 'https://sheetdb.io/api/v1/xdwcmr11otzgn';
+const SHEETDB_ENDPOINT = process.env.SHEETDB_ENDPOINT;
 
 export async function GET() {
   try {
+    // Check if the environment variable exists
+    if (!SHEETDB_ENDPOINT) {
+      throw new Error('SHEETDB_ENDPOINT environment variable is not configured');
+    }
+    
     const response = await fetch(SHEETDB_ENDPOINT);
     
     if (!response.ok) {
