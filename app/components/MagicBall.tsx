@@ -28,11 +28,22 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
   const [isShaking, setIsShaking] = useState(false);
   const [ballGlow, setBallGlow] = useState(false);
   const [currentGeneration, setCurrentGeneration] = useState(0);
+  const [ballSize, setBallSize] = useState(500);
   const containerRef = useRef<HTMLDivElement>(null);
   const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (wordBag.length === 0) return;
+
+    // Update ball size based on screen size
+    const updateBallSize = () => {
+      const screenWidth = window.innerWidth;
+      const newSize = screenWidth < 640 ? Math.min(screenWidth - 40, 350) : 500;
+      setBallSize(newSize);
+    };
+
+    updateBallSize();
+    window.addEventListener('resize', updateBallSize);
 
     const animate = () => {
       setFloatingNames(prev => {
@@ -47,14 +58,15 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
           const bubbleHeight = 40; // Estimate bubble height
           const margin = bubbleWidth / 2;
           const verticalMargin = bubbleHeight / 2;
+          const boundary = ballSize - 20; // Account for ball border
           
-          if (newX <= margin || newX >= (480 - margin)) {
+          if (newX <= margin || newX >= (boundary - margin)) {
             newVx = -newVx;
-            newX = Math.max(margin, Math.min(480 - margin, newX));
+            newX = Math.max(margin, Math.min(boundary - margin, newX));
           }
-          if (newY <= verticalMargin || newY >= (480 - verticalMargin)) {
+          if (newY <= verticalMargin || newY >= (boundary - verticalMargin)) {
             newVy = -newVy;
-            newY = Math.max(verticalMargin, Math.min(480 - verticalMargin, newY));
+            newY = Math.max(verticalMargin, Math.min(boundary - verticalMargin, newY));
           }
 
           return {
@@ -102,16 +114,16 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
               // Update positions
               updatedNames[i] = {
                 ...name1,
-                x: Math.max(0, Math.min(480, name1.x + force1X)),
-                y: Math.max(0, Math.min(480, name1.y + force1Y)),
+                x: Math.max(0, Math.min(ballSize - 20, name1.x + force1X)),
+                y: Math.max(0, Math.min(ballSize - 20, name1.y + force1Y)),
                 vx: name1.vx + force1X * 0.1, // Much gentler velocity changes
                 vy: name1.vy + force1Y * 0.1
               };
               
               updatedNames[j] = {
                 ...name2,
-                x: Math.max(0, Math.min(480, name2.x + force2X)),
-                y: Math.max(0, Math.min(480, name2.y + force2Y)),
+                x: Math.max(0, Math.min(ballSize - 20, name2.x + force2X)),
+                y: Math.max(0, Math.min(ballSize - 20, name2.y + force2Y)),
                 vx: name2.vx + force2X * 0.1, // Much gentler velocity changes
                 vy: name2.vy + force2Y * 0.1
               };
@@ -128,11 +140,12 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
     animationRef.current = requestAnimationFrame(animate);
 
     return () => {
+      window.removeEventListener('resize', updateBallSize);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [wordBag]);
+  }, [wordBag, ballSize]);
 
   const generateFloatingName = () => {
     const result = generator.generateName(selectedPattern || undefined);
@@ -147,9 +160,10 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
       const bubbleWidth = Math.max(80, result.name.length * 12);
       const margin = bubbleWidth / 2;
       const verticalMargin = 20;
+      const boundary = ballSize - 20;
       
-      spawnX = Math.random() * (480 - 2 * margin) + margin;
-      spawnY = Math.random() * (480 - 2 * verticalMargin) + verticalMargin;
+      spawnX = Math.random() * (boundary - 2 * margin) + margin;
+      spawnY = Math.random() * (boundary - 2 * verticalMargin) + verticalMargin;
       
       // Check if this position overlaps with existing names from the same generation
       validPosition = !floatingNames.some(existingName => {
@@ -222,7 +236,7 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
   return (
     <div className={`relative ${className}`}>
       {/* Control Panel */}
-      <div className="mb-6 space-y-4">
+      <div className="mb-4 sm:mb-6 space-y-4">
         <div>
           <label className="block text-sm font-medium mb-2">
             Name Pattern (leave empty for random):
@@ -230,7 +244,7 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
           <select 
             value={selectedPattern} 
             onChange={(e) => setSelectedPattern(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md bg-white"
+            className="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md bg-white"
           >
             <option value="">Random Pattern</option>
             {NAME_PATTERNS.map(pattern => (
@@ -241,24 +255,24 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
           </select>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           <button
             onClick={shakeBall}
             disabled={isShaking}
-            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 transition-colors"
+            className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50 transition-colors"
           >
             {isShaking ? 'Generating...' : 'Shake the Crystal Ball'}
           </button>
           
           <button
             onClick={() => generator.resetUsedWords()}
-            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+            className="px-3 py-2 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
           >
             Reset Word Pool
           </button>
         </div>
 
-        <div className="text-sm text-gray-600">
+        <div className="text-xs sm:text-sm text-gray-600 text-center">
           Words remaining: {generator.getRemainingWordsCount()} / {wordBag.length}
         </div>
       </div>
@@ -266,7 +280,8 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
       {/* Magic Crystal Ball */}
       <div 
         ref={containerRef}
-        className="relative w-[500px] h-[500px] mx-auto"
+        className="relative mx-auto"
+        style={{ width: `${ballSize}px`, height: `${ballSize}px` }}
       >
         {/* Crystal Ball */}
         <div className={`
@@ -301,8 +316,8 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
             }}
             onClick={() => handleNameClick(name)}
           >
-            <div className="bg-white/95 backdrop-blur-sm px-5 py-3 rounded-full shadow-xl border-2 border-purple-300 hover:bg-purple-50 transition-colors whitespace-nowrap flex items-center justify-center min-w-max">
-              <span className="text-lg font-bold text-purple-900 text-center leading-none">
+            <div className="bg-white/95 backdrop-blur-sm px-3 py-2 sm:px-5 sm:py-3 rounded-full shadow-xl border-2 border-purple-300 hover:bg-purple-50 transition-colors whitespace-nowrap flex items-center justify-center min-w-max">
+              <span className="text-sm sm:text-lg font-bold text-purple-900 text-center leading-none">
                 {name.name}
               </span>
             </div>
