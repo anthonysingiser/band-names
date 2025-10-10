@@ -106,10 +106,9 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-12 text-gray-500 text-sm">
-          <p>✨ Powered by mystical algorithms and creative chaos ✨</p>
+        <div className="text-center mt-12 text-gray-500 text-sm"> 
           <p className="mt-2">
-            Made with 💜 for musicians, dreamers, and name enthusiasts
+            Made with 💜 for musicians, and name enthusiasts
           </p>
         </div>
       </div>

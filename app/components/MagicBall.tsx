@@ -246,13 +246,13 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
       {/* Control Panel */}
       <div className="mb-4 sm:mb-6 space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-2">
-            Name Pattern (leave empty for random):
+          <label className="block text-sm font-semibold mb-2 text-gray-800">
+            Choose Name Pattern:
           </label>
           <select 
             value={selectedPattern} 
             onChange={(e) => setSelectedPattern(e.target.value)}
-            className="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md bg-white"
+            className="w-full p-2 text-sm sm:text-base border border-gray-300 rounded-md bg-white text-gray-900 font-medium"
           >
             <option value="">Random Pattern</option>
             {NAME_PATTERNS.map(pattern => (
@@ -350,11 +350,11 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
 
       {/* Pattern Info */}
       {selectedPattern && (
-        <div className="mt-4 p-3 bg-purple-50 rounded-lg">
+        <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
           <div className="text-sm">
-            <strong>Selected Pattern:</strong> {NAME_PATTERNS.find(p => p.id === selectedPattern)?.name}
+            <strong className="text-gray-900">Selected Pattern:</strong> <span className="text-gray-800 font-medium">{NAME_PATTERNS.find(p => p.id === selectedPattern)?.name}</span>
             <br />
-            <span className="text-gray-600">
+            <span className="text-gray-700 font-medium">
               {NAME_PATTERNS.find(p => p.id === selectedPattern)?.description}
             </span>
           </div>
