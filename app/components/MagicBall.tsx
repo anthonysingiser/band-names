@@ -38,7 +38,15 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
     // Update ball size based on screen size
     const updateBallSize = () => {
       const screenWidth = window.innerWidth;
-      const newSize = screenWidth < 640 ? Math.min(screenWidth - 40, 350) : 500;
+      const screenHeight = window.innerHeight;
+      const containerPadding = 80; // Account for page padding and margins
+      
+      // Calculate max size that fits both width and height
+      const maxWidthSize = screenWidth - containerPadding;
+      const maxHeightSize = screenHeight - 400; // Leave space for controls and other UI
+      const maxMobileSize = Math.min(maxWidthSize, maxHeightSize, 300);
+      
+      const newSize = screenWidth < 640 ? Math.max(maxMobileSize, 200) : 500; // Minimum 200px
       setBallSize(newSize);
     };
 
@@ -73,8 +81,8 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
             ...name,
             x: newX,
             y: newY,
-            vx: newVx,
-            vy: newVy,
+            vx: newVx * 0.98 + (Math.random() - 0.5) * 0.05, // Add gentle random drift and slight friction
+            vy: newVy * 0.98 + (Math.random() - 0.5) * 0.05, // Add gentle random drift and slight friction
             opacity: Math.max(0, name.opacity - 0.0005) // Much slower fade
           };
         });
@@ -94,12 +102,12 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
             const distance = Math.sqrt(dx * dx + dy * dy);
             
             // Minimum distance to avoid overlap (adjust based on text length)
-            const minDistance = Math.max(60, Math.max(name1.name.length, name2.name.length) * 8);
+            const minDistance = Math.max(40, Math.max(name1.name.length, name2.name.length) * 6); // Reduced from 60 and 8
             
             if (distance < minDistance && distance > 0) {
               // Calculate separation force
               const overlap = minDistance - distance;
-              const separationForce = overlap * 0.05; // Much gentler separation force
+              const separationForce = overlap * 0.02; // Much gentler separation force (was 0.05)
               
               // Normalize direction vector
               const dirX = dx / distance;
@@ -116,16 +124,16 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
                 ...name1,
                 x: Math.max(0, Math.min(ballSize - 20, name1.x + force1X)),
                 y: Math.max(0, Math.min(ballSize - 20, name1.y + force1Y)),
-                vx: name1.vx + force1X * 0.1, // Much gentler velocity changes
-                vy: name1.vy + force1Y * 0.1
+                vx: name1.vx + force1X * 0.05, // Much gentler velocity changes (was 0.1)
+                vy: name1.vy + force1Y * 0.05
               };
               
               updatedNames[j] = {
                 ...name2,
                 x: Math.max(0, Math.min(ballSize - 20, name2.x + force2X)),
                 y: Math.max(0, Math.min(ballSize - 20, name2.y + force2Y)),
-                vx: name2.vx + force2X * 0.1, // Much gentler velocity changes
-                vy: name2.vy + force2Y * 0.1
+                vx: name2.vx + force2X * 0.05, // Much gentler velocity changes (was 0.1)
+                vy: name2.vy + force2Y * 0.05
               };
             }
           }
@@ -186,8 +194,8 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
       pattern: result.pattern,
       x: spawnX,
       y: spawnY,
-      vx: (Math.random() - 0.5) * 0.8, // Much slower movement
-      vy: (Math.random() - 0.5) * 0.8, // Much slower movement
+      vx: (Math.random() - 0.5) * 1.2, // Slightly more varied movement
+      vy: (Math.random() - 0.5) * 1.2, // Slightly more varied movement
       opacity: 1,
       scale: 1.0 + Math.random() * 0.3, // Bigger base size
       generation: currentGeneration
@@ -278,11 +286,15 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
       </div>
 
       {/* Magic Crystal Ball */}
-      <div 
-        ref={containerRef}
-        className="relative mx-auto"
-        style={{ width: `${ballSize}px`, height: `${ballSize}px` }}
-      >
+      <div className="flex justify-center px-4">
+        <div 
+          ref={containerRef}
+          className="relative mx-auto"
+          style={{ 
+            width: `${ballSize}px`, 
+            height: `${ballSize}px`
+          }}
+        >
         {/* Crystal Ball */}
         <div className={`
           absolute inset-0 rounded-full 
@@ -333,6 +345,7 @@ export default function MagicBall({ wordBag, onSaveName, className = '' }: Magic
             </div>
           </div>
         )}
+        </div>
       </div>
 
       {/* Pattern Info */}
