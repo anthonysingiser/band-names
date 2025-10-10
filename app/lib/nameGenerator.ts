@@ -98,6 +98,15 @@ export const NAME_PATTERNS: NamePattern[] = [
             const [word1, word2] = getRandomWords(wordBag, 2);
             return capitalize(word1 + word2);
         }
+    },
+    {
+        id: 'duo',
+        name: '[Word] & [Word]',
+        description: 'Duo band style',
+        generate: (wordBag: string[]) => {
+            const [word1, word2] = getRandomWords(wordBag, 2);
+            return `${capitalize(word1)} & ${capitalize(word2)}`;
+        }
     }
 ];
 
